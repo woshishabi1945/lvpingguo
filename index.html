@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>爷爷的日记</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: "Arial", sans-serif;
+    }
+    body {
+      background: url('bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    .glass-effect {
+      backdrop-filter: blur(12px);
+      background-color: rgba(255, 255, 255, 0.3);
+      min-height: 100%;
+      padding: 50px 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 30px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    h1 {
+      text-align: center;
+      color: #4b7d58;
+    }
+    .date {
+      text-align: right;
+      color: #999;
+      margin-bottom: 20px;
+    }
+    .content {
+      font-size: 18px;
+      line-height: 1.8;
+      white-space: pre-line;
+    }
+    .tag {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 16px;
+      color: #999;
+    }
+    .image-box {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    .image-box img {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <!-- 毛玻璃主区域 -->
+  <div class="glass-effect">
+    <div class="container">
+      <h1>爷爷日记</h1>
+      <div class="date">2025年7月8日</div>
+      <div class="content">
+        我养的绿苹果好像变得没那么开朗了，  
+        感觉他的情绪有点低落，  
+        说了一些我听不懂的话。  
+        喂了他一盒老鼠药，  
+        希望他能开心起来。  
+      </div>
+
+      <h1>我的日记</h1>
+      <div class="date">2025年7月8日</div>
+      <div class="content">
+        7.8  
+        死绿苹果换的什么鸟背景 
+      </div>
+         <h1>我的日记</h1>
+      <div class="date">2025年7月8日</div>
+      <div class="content"> 
+        7.8
+我养的绿苹果又变高冷了 再喂点老鼠药 希望好起来 
+      </div>
+      <div class="tag">[抱抱你]</div>
+    </div>
+  </div>
+
+  <!-- 左下角图片（本地图片） -->
+  <div class="image-box">
+    <img src="img1.jpg" alt="图片1">
+    <img src="img2.jpg" alt="图片2">
+    <img src="img3.jpg" alt="图片3">
+  </div>
+</body>
+</html>
