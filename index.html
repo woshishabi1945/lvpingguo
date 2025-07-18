@@ -1,56 +1,104 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <title>爷爷的日记</title>
+  <meta charset="UTF-8" />
+  <title>我们的日记</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   <style>
+    /* 省略之前样式，保持一致 */
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
     }
     html, body {
       height: 100%;
-      font-family: "Arial", sans-serif;
+      font-family: 'Orbitron', sans-serif;
+      background: black;
+      overflow-x: hidden;
+      color: #ccc;
     }
-    body {
-      background: url('bg.jpg') no-repeat center center fixed;
-      background-size: cover;
+    body::before {
+      content: "";
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(ellipse at center, rgba(32,32,32,1) 0%, black 100%);
+      z-index: -2;
+    }
+    body::after {
+      content: "";
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: url('https://www.transparenttextures.com/patterns/stardust.png');
+      animation: twinkle 30s infinite linear;
+      opacity: 0.2;
+      z-index: -1;
+    }
+    @keyframes twinkle {
+      from { background-position: 0 0; }
+      to { background-position: 1000px 1000px; }
     }
     .glass-effect {
-      backdrop-filter: blur(12px);
-      background-color: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(20px);
+      background: rgba(0, 0, 0, 0.3);
       min-height: 100%;
       padding: 50px 20px;
     }
     .container {
-      max-width: 600px;
+      max-width: 700px;
       margin: auto;
       padding: 30px;
-      background-color: rgba(255, 255, 255, 0.5);
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(10px);
+      background: rgba(20, 20, 20, 0.6);
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,255,255,0.3);
+      border: 1px solid rgba(0,255,255,0.3);
+      color: #ccf;
     }
     h1 {
-      text-align: center;
-      color: #4b7d58;
+      font-size: 28px;
+      color: #00ffff;
+      text-shadow: 0 0 8px #0ff;
+      margin-bottom: 10px;
     }
     .date {
       text-align: right;
       color: #999;
-      margin-bottom: 20px;
+      font-size: 14px;
+      margin-bottom: 15px;
     }
     .content {
-      font-size: 18px;
+      font-size: 17px;
       line-height: 1.8;
       white-space: pre-line;
+      color: #ddd;
+      border-left: 3px solid #00ffff;
+      padding-left: 12px;
+      margin-bottom: 10px;
+    }
+    .detail-btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 12px;
+      background: #00ffff;
+      color: black;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.3s;
+      box-shadow: 0 0 8px #0ff;
+    }
+    .detail-btn:hover {
+      background: #0ff;
     }
     .tag {
-      margin-top: 30px;
       text-align: center;
       font-size: 16px;
-      color: #999;
+      margin-top: 30px;
+      color: #0ff;
+      animation: glow 2s infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 5px #0ff; }
+      to { text-shadow: 0 0 20px #0ff; }
     }
     .image-box {
       position: fixed;
@@ -58,57 +106,290 @@
       left: 20px;
       display: flex;
       gap: 10px;
+      z-index: 100;
     }
     .image-box img {
       width: 60px;
       height: 60px;
       border-radius: 12px;
       object-fit: cover;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 0 10px #0ff;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+    .image-box img:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 0 20px #0ff;
+    }
+    /* 弹窗通用 */
+    .popup-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .popup-content {
+      background: rgba(0, 0, 0, 0.85);
+      border: 1px solid #00ffff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px #0ff;
+      color: #ccf;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      text-align: left;
+      animation: fadeIn 0.3s ease;
+      position: relative;
+    }
+    .popup-content h2 {
+      color: #00ffff;
+      font-size: 24px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .popup-content p {
+      font-size: 16px;
+      color: #ddd;
+      white-space: pre-line;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px; right: 15px;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .close-btn:hover {
+      color: #fff;
+    }
+    @keyframes fadeIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    /* 回复区域 */
+    .replies {
+      margin-top: 20px;
+      border-top: 1px solid #00ffff;
+      padding-top: 15px;
+    }
+    .reply {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .reply img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 8px #0ff;
+      border: 2px solid #0ff;
+    }
+    .reply .name {
+      font-weight: bold;
+      color: #00ffff;
+      min-width: 80px;
+    }
+    .reply .text {
+      color: #ccc;
+      font-size: 15px;
+      flex: 1;
+      white-space: pre-line;
     }
   </style>
 </head>
 <body>
-  <!-- 毛玻璃主区域 -->
   <div class="glass-effect">
-    <div class="container">
-      <h1>爷爷日记</h1>
-      <div class="date">2025年7月8日</div>
-      <div class="content">
-        我养的绿苹果好像变得没那么开朗了，  
-        感觉他的情绪有点低落，  
-        说了一些我听不懂的话。  
-        喂了他一盒老鼠药，  
-        希望他能开心起来。  
-      </div>
+    <div class="container" id="diaryContainer"></div>
+  </div>
 
-      <h1>爷的日记</h1>
-      <div class="date">2025年7月8日</div>
-      <div class="content">
-        7.8  
-        死绿苹果换的什么鸟背景 
-      </div>
-         <h1>爷的日记</h1>
-      <div class="date">2025年7月8日</div>
-      <div class="content"> 
-        7.8
-我养的绿苹果又变高冷了 再喂点老鼠药 希望好起来 
-      </div>
-            <h1>爷的日记</h1>
-      <div class="date">2025年7月8日</div>
-      <div class="content">
-        7.9 
-        
-绿苹果不看我分享的视频 乱棍打死
-      </div>
-            <h1>秋的日记</h1>
-      <div class="date">2025年7月8日</div>
-      <div class="content">
-        7.9
-青苹果又说人家高冷，其实我只是新鲜感过了不喜欢它懒得理罢了这边建议喂点老鼠药乱棍打死
-      </div>
-      <div class="tag">[抱抱你]</div>
+  <div class="popup-overlay" id="infoPopup">
+    <div class="popup-content">
+      <span class="close-btn" onclick="closePopup('infoPopup')">✖</span>
+      <h2 id="infoName"></h2>
+      <p id="infoDescription"></p>
     </div>
+  </div>
+
+  <div class="popup-overlay" id="detailPopup">
+    <div class="popup-content">
+      <span class="close-btn" onclick="closePopup('detailPopup')">✖</span>
+      <h2 id="detailTitle"></h2>
+      <div class="date" id="detailDate"></div>
+      <p id="detailContent"></p>
+      <div class="replies" id="detailReplies"></div>
+    </div>
+  </div>
+
+  <div class="image-box">
+    <img src="img1.jpg" alt="菠萝" onclick="showInfo('菠萝', '家族称呼爷爷，喜欢菠萝')" />
+    <img src="img2.jpg" alt="绿苹果" onclick="showInfo('绿苹果', '绿色苹果星人，情绪易波动，需定期喂食老鼠药')" />
+    <img src="img3.jpg" alt="小秋" onclick="showInfo('小秋', '家族称呼小秋，非常高冷')" />
+  </div>
+
+  <script>
+    const diaries = [
+      {
+        title: "爷爷日记",
+        date: "2025年7月8日",
+        content: `我养的绿苹果好像变得没那么开朗了，
+感觉他的情绪有点低落，
+说了一些我听不懂的话。
+喂了他一盒老鼠药，
+希望他能开心起来。`,
+        replies: [
+          {
+            avatar: "img2.jpg",
+            name: "绿苹果",
+            text: "不要啊"
+          }
+        ]
+      },
+      {
+        title: "爷的日记",
+        date: "2025年7月8日",
+        content: `7.8
+死绿苹果换的什么鸟背景`,
+        replies: [
+          {
+            avatar: "img2.jpg",
+            name: "绿苹果",
+            text: "小雨不喜欢吗"
+          }
+        ]
+      },
+      {
+        title: "爷的日记",
+        date: "2025年7月8日",
+        content: `7.8
+我养的绿苹果又变高冷了 再喂点老鼠药 希望好起来`,
+        replies: []
+      },
+      {
+        title: "爷的日记",
+        date: "2025年7月9日",
+        content: `7.9
+绿苹果不看我分享的视频 乱棍打死`,
+        replies: [
+          {
+            avatar: "img2.jpg",
+            name: "绿苹果",
+            text: "我保证你分享的视频都会看"
+          }
+        ]
+      },
+      {
+        title: "秋的日记",
+        date: "2025年7月9日",
+        content: `7.9
+青苹果又说人家高冷，其实我只是新鲜感过了不喜欢它懒得理罢了这边建议喂点老鼠药乱棍打死`,
+        replies: []
+      },
+      {
+        title: "秋的日记",
+        date: "2025年7月15日",
+        content: `7.15
+今天青苹果把我的好友删了 我那时候才刚刚睡醒眼睛都没睁开就回青苹果的消息 结果刚刚点开一看忘记具体回复了我就回复了一条结果发现果果把我删了我好伤心好伤心我一点都不伤心。`,
+        replies: [
+          {
+            avatar: "img2.jpg",
+            name: "绿苹果",
+            text: "错了错了小秋"
+          }
+        ]
+      }
+    ];
+
+    const container = document.getElementById("diaryContainer");
+
+    function renderDiaries() {
+      container.innerHTML = "";
+      diaries.forEach((d, i) => {
+        const diaryDiv = document.createElement("div");
+        diaryDiv.style.marginBottom = "40px";
+
+        const title = document.createElement("h1");
+        title.textContent = d.title;
+        diaryDiv.appendChild(title);
+
+        const date = document.createElement("div");
+        date.className = "date";
+        date.textContent = d.date;
+        diaryDiv.appendChild(date);
+
+        const content = document.createElement("div");
+        content.className = "content";
+        content.textContent = d.content;
+        diaryDiv.appendChild(content);
+
+        const detailBtn = document.createElement("div");
+        detailBtn.className = "detail-btn";
+        detailBtn.textContent = "详情";
+        detailBtn.onclick = () => showDetail(i);
+        diaryDiv.appendChild(detailBtn);
+
+        container.appendChild(diaryDiv);
+      });
+    }
+
+    function showInfo(name, desc) {
+      document.getElementById("infoName").innerText = name;
+      document.getElementById("infoDescription").innerText = desc;
+      document.getElementById("infoPopup").style.display = "flex";
+    }
+
+    function closePopup(id) {
+      document.getElementById(id).style.display = "none";
+    }
+
+    function showDetail(index) {
+      const diary = diaries[index];
+      document.getElementById("detailTitle").innerText = diary.title;
+      document.getElementById("detailDate").innerText = diary.date;
+      document.getElementById("detailContent").innerText = diary.content;
+
+      const repliesDiv = document.getElementById("detailReplies");
+      repliesDiv.innerHTML = "";
+      if(diary.replies.length === 0){
+        repliesDiv.innerHTML = '<p style="color:#555; font-style: italic;">暂无回复</p>';
+      } else {
+        diary.replies.forEach(r => {
+          const replyDiv = document.createElement("div");
+          replyDiv.className = "reply";
+
+          const avatar = document.createElement("img");
+          avatar.src = r.avatar;
+          avatar.alt = r.name;
+          replyDiv.appendChild(avatar);
+
+          const nameDiv = document.createElement("div");
+          nameDiv.className = "name";
+          nameDiv.textContent = r.name;
+          replyDiv.appendChild(nameDiv);
+
+          const textDiv = document.createElement("div");
+          textDiv.className = "text";
+          textDiv.textContent = r.text;
+          replyDiv.appendChild(textDiv);
+
+          repliesDiv.appendChild(replyDiv);
+        });
+      }
+
+      document.getElementById("detailPopup").style.display = "flex";
+    }
+
+    renderDiaries();
+  </script>
+</body>
+</html>    </div>
   </div>
 
   <!-- 左下角图片（本地图片） -->
